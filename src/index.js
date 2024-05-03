@@ -1,64 +1,50 @@
-import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
+import { fetchBreeds, fetchCatByBreed } from './cat-api';
+import SlimSelect from '../node_modules/slim-select';
+import Notiflix from 'notiflix';
 
-const loader = document.querySelector('.loader');
 const breedSelect = document.querySelector('.breed-select');
+const loaderInfo = document.querySelector('.loader');
 const catInfo = document.querySelector('.cat-info');
-const breedName = document.querySelector('.breed-name');
-const description = document.querySelector('.description');
-const temperament = document.querySelector('.temperament');
+const errorInfo = document.querySelector('.error');
 
-function showLoader() {
-  loader.style.display = 'block';
-}
+// new SlimSelect({
+//   select: 'select.breed-select',
+// });
 
-function hideLoader() {
-  loader.style.display = 'none';
-}
-
-function showError() {
-  // error message
-}
-
-function updateCatInfo(catData) {
-  const { name, description: desc, temperament: temp, url } = catData[0];
-  breedName.textContent = name;
-  description.textContent = desc;
-  temperament.textContent = temp;
-  catInfo.querySelector('img').src = url;
-}
-
-async function handleBreedSelection() {
-  const selectedBreedId = breedSelect.value;
-  showLoader();
-  try {
-    const catData = await fetchCatByBreed(selectedBreedId);
-    updateCatInfo(catData);
-    hideLoader();
-    catInfo.style.display = 'block';
-  } catch (error) {
-    showError();
-    hideLoader();
-  }
-}
-
-breedSelect.addEventListener('change', handleBreedSelection);
-
-async function initializeApp() {
-  showLoader();
-  try {
-    const breeds = await fetchBreeds();
+fetchBreeds()
+  .then(breeds => {
     breeds.forEach(breed => {
       const option = document.createElement('option');
       option.value = breed.id;
       option.textContent = breed.name;
       breedSelect.appendChild(option);
     });
-    hideLoader();
     breedSelect.style.display = 'block';
-  } catch (error) {
-    showError();
-    hideLoader();
-  }
-}
+    loaderInfo.style.display = 'none';
+  })
+  .catch(err => {
+    loaderInfo.style.display = 'none';
+    errorInfo.style.display = 'block';
+    Notiflix.Notify.failure('Error fetching breeds:', err);
+  });
 
-initializeApp();
+breedSelect.addEventListener('change', () => {
+  const selectedBreedId = breedSelect.value;
+  loaderInfo.style.display = 'block';
+  catInfo.style.display = 'none';
+  fetchCatByBreed(selectedBreedId)
+    .then(catData => {
+      const cat = catData[0];
+      catInfo.innerHTML = `<img src="${cat.url}" alt="Cat Image" style="width:auto;height:350px" />
+    <p><strong>Race:</strong> ${cat.breeds[0].name}</p>
+    <p><strong>Description:</strong> ${cat.breeds[0].description}</p>
+    <p><strong>Temperament:</strong> ${cat.breeds[0].temperament}</p>`;
+      catInfo.style.display = 'block';
+      loaderInfo.style.display = 'none';
+    })
+    .catch(err => {
+      loaderInfo.style.display = 'none';
+      errorInfo.style.display = 'block';
+      Notiflix.Notify.failure('Error fetching cat by breed:', err);
+    });
+});
