@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 axios.defaults.headers.common['x-api-key'] =
-  'live_p2yZAjFmXBiLqLvtl9RiqFl9SoUsCgVXZ8JE8IeWIylX4zIeEub9GSAfk7UKcZk2';
+  'live_p2yZAjFmXBiLqLvtl9RiqFl9SoUsCgVXZ8JE8IeWIylX4zIeEub9GSAfk7UKcZk2clear';
 
 export async function fetchBreeds() {
   try {
