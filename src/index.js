@@ -35,10 +35,19 @@ breedSelect.addEventListener('change', () => {
   fetchCatByBreed(selectedBreedId)
     .then(catData => {
       const cat = catData[0];
-      catInfo.innerHTML = `<img src="${cat.url}" alt="Cat Image" style="width:auto;height:350px" />
-    <p><strong>Race:</strong> ${cat.breeds[0].name}</p>
-    <p><strong>Description:</strong> ${cat.breeds[0].description}</p>
-    <p><strong>Temperament:</strong> ${cat.breeds[0].temperament}</p>`;
+      catInfo.innerHTML = `
+    <div class="cat-info-container">
+        <img src="${cat.url}" alt="Cat Image" class="cat-pic" />
+        <div class="cat-details">
+            <span class="p-title">Race:</span>
+            <p>${cat.breeds[0].name}</p>
+            <span class="p-title">Description:</span>
+            <p>${cat.breeds[0].description}</p>
+            <span class="p-title">Temperament:</span>
+            <p>${cat.breeds[0].temperament}</p>
+        </div>
+    </div>
+`;
       catInfo.style.display = 'block';
       loaderInfo.style.display = 'none';
     })
