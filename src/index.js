@@ -1,15 +1,10 @@
 import { fetchBreeds, fetchCatByBreed } from './cat-api';
-import SlimSelect from '../node_modules/slim-select';
 import Notiflix from 'notiflix';
 
 const breedSelect = document.querySelector('.breed-select');
 const loaderInfo = document.querySelector('.loader');
 const catInfo = document.querySelector('.cat-info');
 const errorInfo = document.querySelector('.error');
-
-// new SlimSelect({
-//   select: 'select.breed-select',
-// });
 
 fetchBreeds()
   .then(breeds => {
